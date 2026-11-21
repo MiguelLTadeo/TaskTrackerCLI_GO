@@ -2,7 +2,6 @@ package internal
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -34,7 +33,6 @@ func CreateTask(description string) error {
 	}
 
 	path := filepath.Join(home, "tasks.json")
-	fmt.Println(path)
 	//criação do arquivo json
 	file, err := utils.CreateOrGetFile(path)
 
@@ -62,6 +60,33 @@ func CreateTask(description string) error {
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+func UpdateTask(id int, description string) error {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return err
+	}
+
+	path := filepath.Join(home, "tasks.json")
+	//criação do arquivo json
+	file, err := utils.CreateOrGetFile(path)
+
+	if err != nil {
+		return err
+	}
+	tasks, _, err := GenID(file)
+
+	for i := range tasks {
+		if tasks[i].ID == id {
+			tasks[i].Description = description
+			tasks[i].UpdatedAt = time.Now()
+		}
+	}
+
+	err = WriteTasks(tasks, path)
+
 	return nil
 }
 

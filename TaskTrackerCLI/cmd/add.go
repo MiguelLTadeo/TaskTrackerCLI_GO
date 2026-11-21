@@ -1,12 +1,13 @@
 /*
 Copyright © 2026 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
 	"fmt"
+	"strings"
 
+	"github.com/MiguelLTadeo/TaskTrackerCLI_GO.git/cmd/internal"
 	"github.com/spf13/cobra"
 )
 
@@ -22,6 +23,15 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("add called")
+		if len(args) > 0 {
+			description := strings.Join(args, " ")
+
+			err := internal.CreateTask(description)
+
+			if err != nil {
+				fmt.Println(err)
+			}
+		}
 	},
 }
 
