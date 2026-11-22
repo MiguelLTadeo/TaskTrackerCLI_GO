@@ -2,6 +2,7 @@ package internal
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -23,7 +24,7 @@ type Status int
 const (
 	StatusTodo Status = iota
 	StatusInProgress
-	StausDone
+	StatusDone
 )
 
 func CreateTask(description string) error {
@@ -86,6 +87,109 @@ func UpdateTask(id int, description string) error {
 	}
 
 	err = WriteTasks(tasks, path)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func DeleteTask(id int) error {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return err
+	}
+
+	path := filepath.Join(home, "tasks.json")
+	//criação do arquivo json
+	file, err := utils.CreateOrGetFile(path)
+
+	if err != nil {
+		return err
+	}
+	tasks, _, err := GenID(file)
+
+	var iDel int = -1
+
+	for i := range tasks {
+		if tasks[i].ID == id {
+			iDel = i
+			break
+		}
+	}
+
+	if iDel != -1 {
+		tasks = append(tasks[:iDel], tasks[iDel+1:]...)
+	} else {
+		return fmt.Errorf("Task not found!")
+	}
+
+	err = WriteTasks(tasks, path)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func MarkInProgres(id int) error {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return err
+	}
+
+	path := filepath.Join(home, "tasks.json")
+	//criação do arquivo json
+	file, err := utils.CreateOrGetFile(path)
+
+	if err != nil {
+		return err
+	}
+	tasks, _, err := GenID(file)
+
+	for i := range tasks {
+		if tasks[i].ID == id {
+			tasks[i].Status = int(StatusInProgress)
+		}
+	}
+
+	err = WriteTasks(tasks, path)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func MarkDone(id int) error {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return err
+	}
+
+	path := filepath.Join(home, "tasks.json")
+	//criação do arquivo json
+	file, err := utils.CreateOrGetFile(path)
+
+	if err != nil {
+		return err
+	}
+	tasks, _, err := GenID(file)
+
+	for i := range tasks {
+		if tasks[i].ID == id {
+			tasks[i].Status = int(StatusDone)
+		}
+	}
+
+	err = WriteTasks(tasks, path)
+
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
