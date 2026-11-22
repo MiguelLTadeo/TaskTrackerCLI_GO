@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/MiguelLTadeo/TaskTrackerCLI_GO.git/cmd/utils"
+	"github.com/MiguelLTadeo/TaskTrackerCLI_GO.git/utils"
 )
 
 type Task struct {
@@ -223,12 +223,32 @@ func List(status int) {
 	}
 	tasks, _, err := GenID(file)
 
-	fmt.Println("ID" + "   " + "Status" + "   " + "Description" + "   " + "Created At" + "   " + "Updated At")
-
 	for i := range tasks {
 		if tasks[i].Status == status {
-			fmt.Println(strconv.Itoa(tasks[i].ID) + "   " + StatusString(Status(tasks[i].Status)) + "   " + tasks[i].Description + "   " + tasks[i].CreatedAt.String() + "   " + tasks[i].UpdatedAt.String())
+			fmt.Println("ID:" + strconv.Itoa(tasks[i].ID) + "   STATUS:" + StatusString(Status(tasks[i].Status)) + "   DESCRIPTION:" + tasks[i].Description + "   CREATED AT:" + tasks[i].CreatedAt.String() + "   UPDATED AT" + tasks[i].UpdatedAt.String())
 		}
+	}
+}
+
+func ListAll() {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return
+	}
+
+	path := filepath.Join(home, "tasks.json")
+	//criação do arquivo json
+	file, err := utils.CreateOrGetFile(path)
+
+	if err != nil {
+		return
+	}
+	tasks, _, err := GenID(file)
+
+	for i := range tasks {
+
+		fmt.Println("ID:" + strconv.Itoa(tasks[i].ID) + "   STATUS:" + StatusString(Status(tasks[i].Status)) + "   DESCRIPTION:" + tasks[i].Description + "   CREATED AT:" + tasks[i].CreatedAt.String() + "   UPDATED AT" + tasks[i].UpdatedAt.String())
+
 	}
 }
 
