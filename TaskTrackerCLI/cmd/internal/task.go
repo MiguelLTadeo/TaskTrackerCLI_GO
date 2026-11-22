@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strconv"
 	"time"
 
 	"github.com/MiguelLTadeo/TaskTrackerCLI_GO.git/cmd/utils"
@@ -192,6 +193,56 @@ func MarkDone(id int) error {
 	}
 
 	return nil
+}
+
+func ListTasks(status string) {
+	switch status {
+	case "todo":
+		List(0)
+	case "in-progress":
+		List(1)
+	case "done":
+		List(2)
+	default:
+		fmt.Println("Invalid Status")
+	}
+}
+
+func List(status int) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return
+	}
+
+	path := filepath.Join(home, "tasks.json")
+	//criação do arquivo json
+	file, err := utils.CreateOrGetFile(path)
+
+	if err != nil {
+		return
+	}
+	tasks, _, err := GenID(file)
+
+	fmt.Println("ID" + "   " + "Status" + "   " + "Description" + "   " + "Created At" + "   " + "Updated At")
+
+	for i := range tasks {
+		if tasks[i].Status == status {
+			fmt.Println(strconv.Itoa(tasks[i].ID) + "   " + StatusString(Status(tasks[i].Status)) + "   " + tasks[i].Description + "   " + tasks[i].CreatedAt.String() + "   " + tasks[i].UpdatedAt.String())
+		}
+	}
+}
+
+func StatusString(status Status) string {
+	switch status {
+	case StatusTodo:
+		return "To Do"
+	case StatusInProgress:
+		return "In Progress"
+	case StatusDone:
+		return "Done"
+	default:
+		return "Unknown"
+	}
 }
 
 func GenID(file *os.File) ([]Task, *int, error) {
