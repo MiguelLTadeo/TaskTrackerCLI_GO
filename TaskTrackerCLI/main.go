@@ -1,6 +1,3 @@
-/*
-Copyright © 2026 NAME HERE <EMAIL ADDRESS>
-*/
 package main
 
 import (
@@ -13,7 +10,7 @@ import (
 )
 
 func main() {
-	if len(os.Args) < 1 {
+	if len(os.Args) < 2 {
 		fmt.Println("Invalid function!")
 		return
 	}
@@ -32,12 +29,12 @@ func main() {
 		err := internal.CreateTask(description)
 
 		if err != nil {
-			fmt.Println("Error creating task!")
+			fmt.Println(err.Error())
 			return
 		}
 	case "update":
 		if len(os.Args) < 4 {
-			fmt.Println("Provide the ID and a new Description!")
+			fmt.Println("Provide the ID and a new description!")
 			return
 		}
 
@@ -53,12 +50,12 @@ func main() {
 		err = internal.UpdateTask(id, description)
 
 		if err != nil {
-			fmt.Println("Error updating task!")
+			fmt.Println(err.Error())
 			return
 		}
 	case "delete":
 		if len(os.Args) < 3 {
-			fmt.Println("Provide a ID")
+			fmt.Println("Provide an ID!")
 			return
 		}
 
@@ -72,12 +69,12 @@ func main() {
 		err = internal.DeleteTask(id)
 
 		if err != nil {
-			fmt.Println("Error deleting task!")
+			fmt.Println(err.Error())
 			return
 		}
 	case "mark-in-progress":
 		if len(os.Args) < 3 {
-			fmt.Println("Provide a ID")
+			fmt.Println("Provide an ID!")
 			return
 		}
 
@@ -87,15 +84,15 @@ func main() {
 			fmt.Println("Invalid ID!")
 			return
 		}
-		err = internal.MarkInProgres(id)
+		err = internal.MarkInProgress(id)
 
 		if err != nil {
-			fmt.Println("Error marking task in progress!")
+			fmt.Println(err.Error())
 			return
 		}
 	case "mark-done":
 		if len(os.Args) < 3 {
-			fmt.Println("Provide a ID")
+			fmt.Println("Provide an ID!")
 			return
 		}
 
@@ -108,7 +105,7 @@ func main() {
 		err = internal.MarkDone(id)
 
 		if err != nil {
-			fmt.Println("Error marking task done!")
+			fmt.Println(err.Error())
 			return
 		}
 	case "list":
